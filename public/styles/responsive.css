@@ -1,0 +1,59 @@
+ /* X-Small devices (portrait phones, less than 576px) */
+ /* No media query for `xs` since this is the default in Bootstrap */
+
+ /* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
+  .navbar-toggler-icon {
+    width: 2em;
+  }
+  main {
+    min-height: calc(100vh - 37px - 70px);
+  }
+  .flex-heading {
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .form-select {
+    max-width: 300px;
+  }
+  .footer-copy {
+    font-size: 0.875rem;
+    font-weight: bold;
+  }
+}
+
+ /* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  .form-select {
+    max-width: 500px;
+  }
+}
+
+ /* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  .navbar-nav {
+    margin-top: 0;
+    gap: 1.75rem;
+  }
+  .form-section {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .form-section > div {
+    flex: 1;
+  }
+}
+
+ /* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  
+}
+
+ /* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+
+}

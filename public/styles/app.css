@@ -1,0 +1,120 @@
+.navbar {
+  padding: 0.75rem;
+}
+
+.navbar-toggler {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.navbar-toggler-icon {
+  height: 0.25rem;
+  background-color: white;
+  background-image: none;
+  border-radius: 0.5rem;
+}
+
+.navbar-nav {
+  margin-top: 1rem;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.nav-link.active {
+  color: cyan !important;
+}
+
+main {
+  min-height: calc(100vh - 64px - 34px);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  font-size: 1.5em;
+}
+
+.page-content {
+  overflow: auto;
+  padding: 1em;
+}
+
+.flex-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-select {
+  max-width: 200px;
+}
+
+form {
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  width: 100%;
+  display: none;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-content > form.active {
+  display: flex;
+}
+
+.form-content {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-input > input {
+  padding: 7px;
+  outline: none;
+  border: 1px solid grey;
+  border-radius: 4px;
+}
+
+.full-button {
+  width: 100%;
+}
+
+.footer {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  font-weight: bold;
+}
