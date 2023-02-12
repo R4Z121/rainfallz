@@ -51,6 +51,7 @@ class ArtificialBeeColony extends BaseController
 
     //START LOOPING UNTIL ITERATION = TOTAL ITERATION
     for ($iteration = 1; $iteration <= $maxIteration; $iteration++) {
+      echo "<br>=================== ITERATION-$iteration ===================<br>";
       //DO EMPLOYED BEE PHASE
       $foodSource = $this->employedBeePhase($foodSource);
       echo "Employed Bee Phase Result : <br>";
@@ -59,11 +60,19 @@ class ArtificialBeeColony extends BaseController
       $foodSource = $this->onlookerBeePhase($foodSource, $totalBees);
       echo "Onlooker Bee Phase Result : <br>";
       d($foodSource);
+      //MEMORIZE BEST FOOD SOURCE SO FAR
+      $bestFoodSource = $this->memorizeBestFoodSource($bestFoodSource, $foodSource);
+      echo "Best Food Source Result so Far : <br>";
+      d($bestFoodSource);
       //DO SCOUT BEE PHASE
-      //MEMORIZE BEST FOOD SOURCE
-      $bestFoodSource = $this->memorizeBestFoodSource($foodSource);
-      echo "Best Food Source Result : <br>";
-      dd($bestFoodSource);
+      $abandonedFoodSources = $this->abandonedFoodSource($foodSource["trial"], $limit);
+      if ($abandonedFoodSources) {
+        echo "<br>There might be some abandoned food sources so new food sources we got are these:<br>";
+        $foodSource = $this->scoutBeePhase($foodSource, $abandonedFoodSources);
+        d($foodSource);
+      } else {
+        echo "<br>There is no abandoned food source<br>";
+      }
     }
     //SHOW FINAL FOOD SOURCES
     //FORECAST USING BEST FOOD SOURCE 
@@ -72,12 +81,12 @@ class ArtificialBeeColony extends BaseController
   public function initializationPhase($totalBees)
   {
     $foodSource = [
-      "parameters" => $this->artificialBeeColonyModel->generateFoodSources($totalBees),
+      "parameters" => $this->artificialBeeColonyModel->generateParameters($totalBees),
       "fitnessValue" => [],
       "trial" => []
     ];
     foreach ($foodSource["parameters"] as $parameters) {
-      $fitnessValue = $this->forecast($parameters);
+      $fitnessValue = $this->calculateFitnessValue($parameters);
       array_push($foodSource["fitnessValue"], $fitnessValue);
       array_push($foodSource["trial"], 0);
     }
@@ -114,7 +123,18 @@ class ArtificialBeeColony extends BaseController
     return $newFoodSource;
   }
 
-  public function forecast($parameters)
+  public function scoutBeePhase($foodSource, $abandonedFoodSources)
+  {
+    $newFoodSource = $foodSource;
+    foreach ($abandonedFoodSources as $index) {
+      $newFoodSource["parameters"][$index] = $this->artificialBeeColonyModel->generateParameter();
+      $newFoodSource["fitnessValue"][$index] = $this->calculateFitnessValue($newFoodSource["parameters"][$index]);
+      $newFoodSource["trial"][$index] = 0;
+    }
+    return $newFoodSource;
+  }
+
+  public function calculateFitnessValue($parameters)
   {
     $climateData = $this->climateModel->getClimateDataVariables();
     $rainfallData = $this->climateModel->getRainfallData();
@@ -154,7 +174,7 @@ class ArtificialBeeColony extends BaseController
     $oldFoodLocation = $newParametersCandidate[$randomCategory][$randomIndex];
     $partnerFoodSource = $parameters[$randomPartner][$randomCategory][$randomIndex];
     $newParametersCandidate[$randomCategory][$randomIndex] = $this->artificialBeeColonyModel->generateNewFoodLocation($oldFoodLocation, $partnerFoodSource);
-    $newFitnessValue = $this->forecast($newParametersCandidate);
+    $newFitnessValue = $this->calculateFitnessValue($newParametersCandidate);
 
     return [
       "newParametersCandidate" => $newParametersCandidate,
@@ -177,14 +197,30 @@ class ArtificialBeeColony extends BaseController
     return $newFoodSource;
   }
 
-  public function memorizeBestFoodSource($foodSource)
+  public function memorizeBestFoodSource($bestFoodSource, $foodSource)
   {
+
     $fitnessValues = $foodSource["fitnessValue"];
     $lowestFitnessValue = min($fitnessValues);
     $indexOfBestFoodSource = array_search($lowestFitnessValue, $fitnessValues);
-    return [
-      "parameters" => $foodSource["parameters"][$indexOfBestFoodSource],
-      "fitnessValue" => $foodSource["fitnessValue"][$indexOfBestFoodSource],
-    ];
+
+    if (!$bestFoodSource["parameters"] || $bestFoodSource["fitnessValue"] > $lowestFitnessValue) {
+      $bestFoodSource = [
+        "parameters" => $foodSource["parameters"][$indexOfBestFoodSource],
+        "fitnessValue" => $foodSource["fitnessValue"][$indexOfBestFoodSource],
+      ];
+    }
+    return $bestFoodSource;
+  }
+
+  public function abandonedFoodSource($trialValue, $limit)
+  {
+    $abandonedFoodSources = [];
+    foreach ($trialValue as $key => $value) {
+      if ($value >= $limit) {
+        array_push($abandonedFoodSources, $key);
+      }
+    }
+    return $abandonedFoodSources;
   }
 }

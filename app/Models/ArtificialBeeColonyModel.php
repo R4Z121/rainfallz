@@ -6,19 +6,23 @@ use CodeIgniter\Model;
 
 class ArtificialBeeColonyModel extends Model
 {
-  public function generateFoodSources($totalBees)
+  public function generateParameters($totalBees)
   {
-    $foodSource = [];
+    $parameters = [];
     for ($i = 1; $i <= $totalBees; $i++) {
-      $parameters = [
-        "temperature" => $this->generateRandomTemperatureParams(21, 31),
-        "humidity" => $this->generateRandomHumidityParams(44, 84),
-        "airPressure" => $this->generateRandomAirPressureParams(1002, 1015),
-        "windVelocity" => $this->generateRandomWindVelocityParams(2, 5)
-      ];
-      array_push($foodSource, $parameters);
+      $parameter = $this->generateParameter();
+      array_push($parameters, $parameter);
     }
-    return $foodSource;
+    return $parameters;
+  }
+  public function generateParameter()
+  {
+    return [
+      "temperature" => $this->generateRandomTemperatureParams(21, 31),
+      "humidity" => $this->generateRandomHumidityParams(44, 84),
+      "airPressure" => $this->generateRandomAirPressureParams(1002, 1015),
+      "windVelocity" => $this->generateRandomWindVelocityParams(2, 5)
+    ];
   }
   public function generateNewFoodLocation($oldFoodLocation, $partnerFoodLocation)
   {
