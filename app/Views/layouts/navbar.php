@@ -10,7 +10,7 @@
       <div class="navbar-nav ms-auto d-flex justify-content-between">
         <a class="nav-link <?= ($title == 'Home') ? 'active" aria-current="page' : ''; ?>" href="/">Home</a>
         <a class="nav-link <?= ($title == 'Forecast') ? 'active" aria-current="page' : ''; ?>" href="/forecast">Forecast</a>
-        <a class="nav-link <?= ($title == 'Prediction History') ? 'active" aria-current="page' : ''; ?>" href="/prediction-history">Prediction History</a>
+        <a class="nav-link <?= ($title == 'Forecasting History') ? 'active" aria-current="page' : ''; ?>" href="/history">Forecasting History</a>
       </div>
     </div>
   </div>

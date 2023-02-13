@@ -26,7 +26,8 @@ class Tsukamoto extends BaseController
       "title" => "Forecasting Result",
       "input" => $input,
       "finalResult" => $finalResult,
-      "errorRate" => $errorRate
+      "errorRate" => $errorRate,
+      "method" => "FIS Tsukamoto"
     ];
     return view('Pages/result', $data);
   }

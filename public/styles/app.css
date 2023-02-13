@@ -65,11 +65,21 @@ main {
 }
 
 form {
-  flex-direction: column;
-  gap: 20px;
-  max-width: 600px;
   width: 100%;
+}
+
+.hidden-form {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.forecasting-form {
   display: none;
+  max-width: 600px;
+  gap: 20px;
+  flex-direction: column;
 }
 
 .form-section {
@@ -78,7 +88,12 @@ form {
   gap: 20px;
 }
 
-.page-content > form.active {
+.button-form {
+  display: flex;
+  gap: 15px;
+}
+
+.forecasting-form.active {
   display: flex;
 }
 
@@ -96,7 +111,7 @@ form {
   gap: 5px;
 }
 
-.form-input > input {
+.form-input>input {
   padding: 7px;
   outline: none;
   border: 1px solid grey;

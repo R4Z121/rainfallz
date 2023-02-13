@@ -4,8 +4,6 @@ namespace App\Controllers;
 
 use App\Controllers\Tsukamoto;
 
-use App\Models\TsukamotoModel;
-use App\Models\RuleSetModel;
 use App\Models\ClimateModel;
 use App\Models\ArtificialBeeColonyModel;
 
@@ -46,36 +44,32 @@ class ArtificialBeeColony extends BaseController
 
     //DO INITIALIZATION PHASE (TOTAL OF BEES) => RETURN ARRAY OF FOOD SOURCE WITH FITNESS VALUE FOR EACH SOLUTION AND TRIAL VALUE
     $foodSource = $this->initializationPhase($totalBees);
-    echo "Initialization Phase Result : <br>";
-    d($foodSource);
 
     //START LOOPING UNTIL ITERATION = TOTAL ITERATION
     for ($iteration = 1; $iteration <= $maxIteration; $iteration++) {
-      echo "<br>=================== ITERATION-$iteration ===================<br>";
       //DO EMPLOYED BEE PHASE
       $foodSource = $this->employedBeePhase($foodSource);
-      echo "Employed Bee Phase Result : <br>";
-      d($foodSource);
       //DO ONLOOKER BEE PHASE
       $foodSource = $this->onlookerBeePhase($foodSource, $totalBees);
-      echo "Onlooker Bee Phase Result : <br>";
-      d($foodSource);
       //MEMORIZE BEST FOOD SOURCE SO FAR
       $bestFoodSource = $this->memorizeBestFoodSource($bestFoodSource, $foodSource);
-      echo "Best Food Source Result so Far : <br>";
-      d($bestFoodSource);
       //DO SCOUT BEE PHASE
       $abandonedFoodSources = $this->abandonedFoodSource($foodSource["trial"], $limit);
       if ($abandonedFoodSources) {
-        echo "<br>There might be some abandoned food sources so new food sources we got are these:<br>";
         $foodSource = $this->scoutBeePhase($foodSource, $abandonedFoodSources);
-        d($foodSource);
-      } else {
-        echo "<br>There is no abandoned food source<br>";
       }
     }
-    //SHOW FINAL FOOD SOURCES
-    //FORECAST USING BEST FOOD SOURCE 
+    //FORECAST USING BEST FOOD SOURCE
+    $forecastingResult = $this->tsukamoto->forecast($climateInput, $bestFoodSource["parameters"]);
+
+    $data = [
+      "title" => "Forecasting Result",
+      "input" => $climateInput,
+      "finalResult" => $forecastingResult,
+      "errorRate" => $bestFoodSource["fitnessValue"],
+      "method" => "FIS Tsukamoto & Artificial Bee Colony"
+    ];
+    return view('Pages/result', $data);
   }
 
   public function initializationPhase($totalBees)
@@ -132,6 +126,10 @@ class ArtificialBeeColony extends BaseController
       $newFoodSource["trial"][$index] = 0;
     }
     return $newFoodSource;
+  }
+
+  public function forecast($inputVariables, $parameters)
+  {
   }
 
   public function calculateFitnessValue($parameters)

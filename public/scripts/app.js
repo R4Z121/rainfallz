@@ -5,6 +5,12 @@ $(document).ready(function () {
   });
 });
 
+$(document).ready(function () {
+  $('#history-data').DataTable({
+    lengthMenu: [10, 20, 30, 40, 50,]
+  });
+});
+
 //switch form
 $('#forecast_method').change(() => {
   $('form.active').removeClass('active');

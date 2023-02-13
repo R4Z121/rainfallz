@@ -31,10 +31,11 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Pages::index');
 $routes->add('/forecast', 'Pages::forecast');
-$routes->add('/prediction-history', 'Pages::history');
+$routes->add('/history', 'Pages::history');
 
 $routes->post('/forecast/tsukamoto', 'Tsukamoto::start');
 $routes->post('/forecast/artificial-bee-colony', 'ArtificialBeeColony::start');
+$routes->post('/forecasting-history', 'ForecastingHistory::addData');
 
 /*
  * --------------------------------------------------------------------

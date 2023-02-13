@@ -10,7 +10,7 @@
   </div>
 </section>
 <section class="page-content form-content">
-  <form class="active" action="/forecast/tsukamoto" method="post" id="1">
+  <form class="active forecasting-form" action="/forecast/tsukamoto" method="post" id="1">
     <?= csrf_field(); ?>
     <div class="form-input">
       <label for="temperature">Temperature</label>
@@ -30,7 +30,7 @@
     </div>
     <button class="btn btn-primary" type="submit">Calculate Rainfall</button>
   </form>
-  <form class="section-form" action="/forecast/artificial-bee-colony" method="POST" id="2">
+  <form class="section-form forecasting-form" action="/forecast/artificial-bee-colony" method="POST" id="2">
     <?= csrf_field(); ?>
     <section class="form-section">
       <div class="form-input">

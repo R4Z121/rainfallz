@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ClimateModel;
+use App\Models\ForecastingHistoryModel;
 
 class Pages extends BaseController
 {
@@ -25,8 +26,11 @@ class Pages extends BaseController
   }
   public function history()
   {
+    $forecastingHistoryModel = new ForecastingHistoryModel();
+    $histories = $forecastingHistoryModel->getAllHistory();
     $data = [
       'title' => 'Prediction History',
+      'histories' => $histories
     ];
     return view('pages/history', $data);
   }
