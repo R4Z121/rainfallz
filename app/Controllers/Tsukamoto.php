@@ -67,6 +67,6 @@ class Tsukamoto extends BaseController
   }
   public function getErrorRate($actualData, $forecastingResults)
   {
-    return $this->tsukamotoModel->meanAbsoluteDeviation($forecastingResults, $actualData);
+    return $this->tsukamotoModel->meanAbsolutePercentageError($forecastingResults, $actualData);
   }
 }

@@ -181,33 +181,33 @@ class TsukamotoModel extends Model
     $z = 0;
     if ($group == "sunny") {
       if ($alpha == 0) {
-        $z = 200;
+        $z = 105;
       } else if ($alpha < 1) {
-        $z = 200 - ($alpha * 150);
+        $z = 105 - ($alpha * 10);
       } else {
-        $z = 50;
+        $z = 95;
       }
     } else if ($group == "cloudy") {
       if ($alpha == 0) {
-        $z = 350;
+        $z = 305;
       } else if ($alpha < 1) {
-        $z = (150 * $alpha) + 50;
+        $z = (200 * $alpha) + 95;
       } else {
-        $z = 200;
+        $z = 295;
       }
     } else if ($group == "light rain") {
       if ($alpha == 0) {
-        $z = 500;
+        $z = 405;
       } else if ($alpha < 1) {
-        $z = (150 * $alpha) + 200;
+        $z = (100 * $alpha) + 295;
       } else {
-        $z = 350;
+        $z = 395;
       }
     } else if ($group == "rain") {
       if ($alpha == 0) {
-        $z = 350;
+        $z = 395;
       } else if ($alpha < 1) {
-        $z = (150 * $alpha) + 350;
+        $z = (105 * $alpha) + 395;
       } else {
         $z = 500;
       }

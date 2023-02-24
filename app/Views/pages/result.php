@@ -26,7 +26,7 @@
     </tbody>
   </table>
   <div>
-    <h5>Mean Absolute Deviation : <b><?= $errorRate; ?></b></h5>
+    <h5>Mean Absolute Percentage Error : <b><?= $errorRate; ?></b></h5>
   </div>
   <div>
     <form class="hidden-form" action="/forecasting-history" method="post">

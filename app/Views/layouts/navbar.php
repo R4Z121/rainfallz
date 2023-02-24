@@ -9,7 +9,8 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav ms-auto d-flex justify-content-between">
         <a class="nav-link <?= ($title == 'Home') ? 'active" aria-current="page' : ''; ?>" href="/">Home</a>
-        <a class="nav-link <?= ($title == 'Forecast') ? 'active" aria-current="page' : ''; ?>" href="/forecast">Forecast</a>
+        <a class="nav-link <?= ($title == 'Manual Forecasting') ? 'active" aria-current="page' : ''; ?>" href="/forecast/manual">Manual Forecasting</a>
+        <a class="nav-link <?= ($title == 'Dataset Forecasting') ? 'active" aria-current="page' : ''; ?>" href="/forecast/dataset">Dataset Forecasting</a>
         <a class="nav-link <?= ($title == 'Forecasting History') ? 'active" aria-current="page' : ''; ?>" href="/history">Forecasting History</a>
       </div>
     </div>

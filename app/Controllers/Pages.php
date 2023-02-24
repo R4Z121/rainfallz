@@ -17,12 +17,19 @@ class Pages extends BaseController
     ];
     return view('pages/home', $data);
   }
-  public function forecast()
+  public function manualForecast()
   {
     $data = [
-      'title' => 'Forecast',
+      'title' => 'Manual Forecasting',
     ];
-    return view('pages/forecast', $data);
+    return view('pages/manualForecast', $data);
+  }
+  public function datasetForecast()
+  {
+    $data = [
+      'title' => 'Dataset Forecasting',
+    ];
+    return view('pages/datasetForecast', $data);
   }
   public function history()
   {

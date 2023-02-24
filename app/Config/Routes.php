@@ -30,7 +30,8 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Pages::index');
-$routes->add('/forecast', 'Pages::forecast');
+$routes->add('/forecast/manual', 'Pages::manualForecast');
+$routes->add('/forecast/dataset', 'Pages::datasetForecast');
 $routes->add('/history', 'Pages::history');
 
 $routes->post('/forecast/tsukamoto', 'Tsukamoto::start');

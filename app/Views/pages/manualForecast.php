@@ -53,11 +53,11 @@
     <section class="form-section">
       <div class="form-input">
         <label for="totalBees">Total of Bees</label>
-        <input type="number" step="any" id="totalBees" name="totalBees" required>
+        <input type="number" step="any" id="totalBees" name="totalBees" max="10" min="2" required>
       </div>
       <div class="form-input">
         <label for="totalIterations">Total of Iterations</label>
-        <input type="number" step="any" id="totalIterations" name="totalIterations" required>
+        <input type="number" step="any" id="totalIterations" name="totalIterations" max="25" min="1" required>
       </div>
     </section>
     <button class="btn btn-primary full-button" type="submit">Calculate Rainfall</button>
