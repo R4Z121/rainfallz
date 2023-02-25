@@ -12,12 +12,16 @@ class ArtificialBeeColony extends BaseController
   protected $tsukamoto;
   protected $climateModel;
   protected $artificialBeeColonyModel;
+  protected $climateData;
+  protected $rainfallData;
 
   public function __construct()
   {
     $this->tsukamoto = new Tsukamoto();
     $this->climateModel = new ClimateModel();
     $this->artificialBeeColonyModel = new ArtificialBeeColonyModel();
+    $this->climateData = $this->climateModel->getClimateDataVariables();
+    $this->rainfallData = $this->climateModel->getRainfallData();
   }
 
   public function start()
@@ -128,27 +132,20 @@ class ArtificialBeeColony extends BaseController
     return $newFoodSource;
   }
 
-  public function forecast($inputVariables, $parameters)
-  {
-  }
-
   public function calculateFitnessValue($parameters)
   {
-    $climateData = $this->climateModel->getClimateDataVariables();
-    $rainfallData = $this->climateModel->getRainfallData();
     $forecastingResults = [];
-
-    for ($i = 0; $i < count($climateData); $i++) {
+    for ($i = 0; $i < count($this->climateData); $i++) {
       $input = [
-        "temperature" => $climateData[$i]["temperature"],
-        "airPressure" => $climateData[$i]["airPressure"],
-        "humidity" => $climateData[$i]["humidity"],
-        "windVelocity" => $climateData[$i]["windVelocity"],
+        "temperature" => $this->climateData[$i]["temperature"],
+        "airPressure" => $this->climateData[$i]["airPressure"],
+        "humidity" => $this->climateData[$i]["humidity"],
+        "windVelocity" => $this->climateData[$i]["windVelocity"],
       ];
       $forecastingResult = $this->tsukamoto->forecast($input, $parameters);
       array_push($forecastingResults, $forecastingResult);
     }
-    $errorRate = $this->tsukamoto->getErrorRate($forecastingResults, $rainfallData);
+    $errorRate = $this->tsukamoto->getErrorRate($forecastingResults, $this->rainfallData);
     return $errorRate;
   }
 

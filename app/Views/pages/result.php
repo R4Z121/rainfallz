@@ -40,7 +40,7 @@
       <label>Do you want to add this forecasting result to history table ?</label>
       <div class="button-form">
         <button type="submit" class="btn btn-primary">Yes, add it</button>
-        <a class="btn btn-danger" href="/forecast" role="button">No, go back</a>
+        <a class="btn btn-danger" href="/forecast/manual" role="button">No, go back</a>
       </div>
     </form>
   </div>
