@@ -53,7 +53,7 @@
     <section class="form-section">
       <div class="form-input">
         <label for="totalBees">Total of Bees</label>
-        <input type="number" step="any" id="totalBees" name="totalBees" max="10" min="2" required>
+        <input type="number" step="any" id="totalBees" name="totalBees" max="25" min="2" required>
       </div>
       <div class="form-input">
         <label for="totalIterations">Total of Iterations</label>

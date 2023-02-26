@@ -12,6 +12,7 @@ class ClimateModel extends Model
   {
     return $this->findAll();
   }
+
   public function getClimateDataVariables()
   {
     $dataResults = [];
@@ -27,24 +28,34 @@ class ClimateModel extends Model
     }
     return $dataResults;
   }
+
   public function getRainfallData()
   {
     return $this->findColumn("rainfall");
   }
+
   public function getTemperatureData()
   {
     return $this->findColumn("temperature");
   }
+
   public function getHumidityData()
   {
     return $this->findColumn("humidity");
   }
+
   public function getAirPressureData()
   {
     return $this->findColumn("air_pressure");
   }
+
   public function getWindVelocityData()
   {
     return $this->findColumn("wind_velocity");
+  }
+
+  public function getDateData()
+  {
+    return $this->findColumn("period");
   }
 }

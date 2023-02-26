@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 
 class TsukamotoModel extends Model
 {
+
   public function fuzzyfication($temperature, $airPressure, $humidity, $windVelocity, $parameters)
   {
     $temperatureParameters = array(
@@ -40,6 +41,7 @@ class TsukamotoModel extends Model
       "windVelocity" => $windVelocityFuzzyficationValue
     );
   }
+
   public function inference($ruleSet, $fuzzyficationResult)
   {
     $z = [];
@@ -58,6 +60,7 @@ class TsukamotoModel extends Model
       "alpha" => $alpha
     );
   }
+
   public function defuzzyfication($alpha, $z)
   {
     $alphaZ = 0;
@@ -68,16 +71,12 @@ class TsukamotoModel extends Model
     }
     return round(($alphaZ / $totalAlpha), 2);
   }
-  public function meanAbsoluteDeviation($forecastingResults, $actualData)
+
+  public function absolutePercentageError($forecastingResult, $actualData)
   {
-    $result = 0;
-    for ($i = 0; $i < count($forecastingResults); $i++) {
-      $difference = round(abs($actualData[$i] - $forecastingResults[$i]), 2);
-      $result += $difference;
-    }
-    $result = round(($result / count($actualData)), 2);
-    return $result;
+    return round((abs($actualData - $forecastingResult) / $actualData), 2) * 100;
   }
+
   public function meanAbsolutePercentageError($forecastingResults, $actualData)
   {
     $result = 0;
@@ -88,6 +87,12 @@ class TsukamotoModel extends Model
     $result = round(($result / count($actualData)), 2) * 100;
     return $result;
   }
+
+  public function getMAPEResult($apeValues)
+  {
+    return round((array_sum($apeValues) / count($apeValues)), 2);
+  }
+
   private function temperatureFuzzyfication($temperature, $parameters)
   {
     $coldFuzzyfication = $warmFuzzyfication = $hotFuzzyfication = 0;
@@ -110,6 +115,7 @@ class TsukamotoModel extends Model
       "hot" => $hotFuzzyfication
     );
   }
+
   private function airPressureFuzzyfication($airPressure, $parameters)
   {
     $lowFuzzyfication = $mediumFuzzyfication = $highFuzzyfication = 0;
@@ -132,6 +138,7 @@ class TsukamotoModel extends Model
       "high" => $highFuzzyfication
     );
   }
+
   private function humidityFuzzyfication($humidity, $parameters)
   {
     $dryFuzzyfication = $wetFuzzyfication = $moistFuzzyfication = 0;
@@ -154,6 +161,7 @@ class TsukamotoModel extends Model
       "moist" => $moistFuzzyfication
     );
   }
+
   private function windVelocityFuzzyfication($windVelocity, $parameters)
   {
     $calmFuzzyfication = $strongFuzzyfication = $veryStrongFuzzyfication = 0;
@@ -176,6 +184,7 @@ class TsukamotoModel extends Model
       "veryStrong" => $veryStrongFuzzyfication
     );
   }
+
   private function rainfallFuzzyficattion($alpha, $group)
   {
     $z = 0;

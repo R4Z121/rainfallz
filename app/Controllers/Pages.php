@@ -9,8 +9,11 @@ class Pages extends BaseController
 {
   public function index()
   {
+    $climateModel = new ClimateModel();
+    $climate = $climateModel->getAllClimateData();
     $data = [
       'title' => 'Home',
+      'climates' => $climate,
     ];
     return view('pages/home', $data);
   }
@@ -20,16 +23,6 @@ class Pages extends BaseController
       'title' => 'Manual Forecasting',
     ];
     return view('pages/manualForecast', $data);
-  }
-  public function datasetForecast()
-  {
-    $climateModel = new ClimateModel();
-    $climate = $climateModel->getAllClimateData();
-    $data = [
-      'title' => 'Dataset Forecasting',
-      'climates' => $climate,
-    ];
-    return view('pages/datasetForecast', $data);
   }
   public function history()
   {

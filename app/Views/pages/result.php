@@ -25,24 +25,26 @@
       </tr>
     </tbody>
   </table>
-  <div>
-    <h5>Mean Absolute Percentage Error : <b><?= $errorRate; ?></b></h5>
-  </div>
-  <div>
-    <form class="hidden-form" action="/forecasting-history" method="post">
-      <input type="hidden" id="forecastingMethod" name="forecastingMethod" value="<?= $method; ?>">
-      <input type="hidden" id="temperature" name="temperature" value="<?= $input["temperature"]; ?>">
-      <input type="hidden" id="airPressure" name="airPressure" value="<?= $input["airPressure"]; ?>">
-      <input type="hidden" id="humidity" name="humidity" value="<?= $input["humidity"]; ?>">
-      <input type="hidden" id="windVelocity" name="windVelocity" value="<?= $input["windVelocity"]; ?>">
-      <input type="hidden" id="forecastingResult" name="forecastingResult" value="<?= $finalResult; ?>">
-      <input type="hidden" id="errorRate" name="errorRate" value="<?= $errorRate; ?>">
-      <label>Do you want to add this forecasting result to history table ?</label>
-      <div class="button-form">
-        <button type="submit" class="btn btn-primary">Yes, add it</button>
-        <a class="btn btn-danger" href="/forecast/manual" role="button">No, go back</a>
-      </div>
-    </form>
-  </div>
+  <?php if ($errorRate) : ?>
+    <div>
+      <h5>Mean Absolute Percentage Error : <b><?= $errorRate; ?></b></h5>
+    </div>
+    <div>
+      <form class="hidden-form" action="/forecasting-history" method="post">
+        <input type="hidden" id="forecastingMethod" name="forecastingMethod" value="<?= $method; ?>">
+        <input type="hidden" id="temperature" name="temperature" value="<?= $input["temperature"]; ?>">
+        <input type="hidden" id="airPressure" name="airPressure" value="<?= $input["airPressure"]; ?>">
+        <input type="hidden" id="humidity" name="humidity" value="<?= $input["humidity"]; ?>">
+        <input type="hidden" id="windVelocity" name="windVelocity" value="<?= $input["windVelocity"]; ?>">
+        <input type="hidden" id="forecastingResult" name="forecastingResult" value="<?= $finalResult; ?>">
+        <input type="hidden" id="errorRate" name="errorRate" value="<?= $errorRate; ?>">
+        <label>Do you want to add this forecasting result to history table ?</label>
+        <div class="button-form">
+          <button type="submit" class="btn btn-primary">Yes, add it</button>
+          <a class="btn btn-danger" href="/forecast/manual" role="button">No, go back</a>
+        </div>
+      </form>
+    </div>
+  <?php endif; ?>
 </section>
 <?= $this->endSection(); ?>

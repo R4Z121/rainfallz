@@ -46,6 +46,9 @@ main {
 .page-content {
   overflow: auto;
   padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .flex-heading {

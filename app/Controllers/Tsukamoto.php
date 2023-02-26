@@ -19,19 +19,51 @@ class Tsukamoto extends BaseController
     $this->climateModel = new ClimateModel();
   }
 
-  public function start()
+  public function manualForecast()
   {
     $input = $this->request->getPost();
-    $finalResult = $this->forecast($input);
-    $errorRate = $this->getDataErrorRate();
+    $forecastingResult = $this->forecast($input);
     $data = [
       "title" => "Forecasting Result",
       "input" => $input,
-      "finalResult" => $finalResult,
-      "errorRate" => $errorRate,
+      "finalResult" => $forecastingResult,
       "method" => "FIS Tsukamoto"
     ];
     return view('Pages/result', $data);
+  }
+
+  public function datasetForecast()
+  {
+    $climateData = $this->climateModel->getAllClimateData();
+    $actualData = $this->climateModel->getRainfallData();
+    $dateData = $this->climateModel->getDateData();
+    $forecastingResults = [];
+    $apeValues = [];
+
+    foreach ($climateData as $index => $data) {
+      $variables = [
+        "temperature" => $data["temperature"],
+        "airPressure" => $data["air_pressure"],
+        "humidity" => $data["humidity"],
+        "windVelocity" => $data["wind_velocity"]
+      ];
+      $forecastResult = $this->forecast($variables);
+      $ape = $this->getAPEValue($actualData[$index], $forecastResult);
+      array_push($forecastingResults, $forecastResult);
+      array_push($apeValues, $ape);
+    }
+
+    $mape = $this->tsukamotoModel->getMAPEResult($apeValues);
+
+    $data = [
+      "title" => "Dataset Forecasting Result | FIS Tsukamoto",
+      "date" => $dateData,
+      "rainfalls" => $actualData,
+      "forecastingResults" => $forecastingResults,
+      "ape" => $apeValues,
+      "mape" => $mape
+    ];
+    return view('Pages/datasetForecast', $data);
   }
 
   public function forecast($input, $parameters = false)
@@ -71,22 +103,9 @@ class Tsukamoto extends BaseController
     return $finalResult;
   }
 
-  public function getDataErrorRate()
+  public function getAPEValue($actualData, $forecastingResult)
   {
-    $climateData = $this->climateModel->getAllClimateData();
-    $forecastingResults = [];
-    foreach ($climateData as $data) {
-      $variables = [
-        "temperature" => $data["temperature"],
-        "airPressure" => $data["air_pressure"],
-        "humidity" => $data["humidity"],
-        "windVelocity" => $data["wind_velocity"]
-      ];
-      $forecastingResult = $this->forecast($variables);
-      array_push($forecastingResults, $forecastingResult);
-    }
-    $actualData = $this->climateModel->getRainfallData();
-    return $this->getErrorRate($actualData, $forecastingResults);
+    return $this->tsukamotoModel->absolutePercentageError($forecastingResult, $actualData);
   }
 
   public function getErrorRate($actualData, $forecastingResults)
