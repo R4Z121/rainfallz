@@ -23,9 +23,11 @@ class Tsukamoto extends BaseController
   {
     $input = $this->request->getPost();
     $forecastingResult = $this->forecast($input);
+    $errorRate = $this->getDataErrorRate();
     $data = [
       "title" => "Forecasting Result",
       "input" => $input,
+      "errorRate" => $errorRate,
       "finalResult" => $forecastingResult,
       "method" => "FIS Tsukamoto"
     ];
@@ -53,7 +55,7 @@ class Tsukamoto extends BaseController
       array_push($apeValues, $ape);
     }
 
-    $mape = $this->tsukamotoModel->getMAPEResult($apeValues);
+    $mape = $this->tsukamotoModel->meanAbsolutePercentageError($apeValues);
 
     $data = [
       "title" => "Dataset Forecasting Result | FIS Tsukamoto",
@@ -108,9 +110,28 @@ class Tsukamoto extends BaseController
     return $this->tsukamotoModel->absolutePercentageError($forecastingResult, $actualData);
   }
 
+  public function getDataErrorRate()
+  {
+    $climateData = $this->climateModel->getAllClimateData();
+    $actualData = $this->climateModel->getRainfallData();
+    $forecastingResults = [];
+
+    foreach ($climateData as $data) {
+      $variables = [
+        "temperature" => $data["temperature"],
+        "airPressure" => $data["air_pressure"],
+        "humidity" => $data["humidity"],
+        "windVelocity" => $data["wind_velocity"]
+      ];
+      $forecastingResult = $this->forecast($variables);
+      array_push($forecastingResults, $forecastingResult);
+    }
+    return $this->getErrorRate($actualData, $forecastingResults);
+  }
+
   public function getErrorRate($actualData, $forecastingResults)
   {
-    return $this->tsukamotoModel->meanAbsolutePercentageError($forecastingResults, $actualData);
+    return $this->tsukamotoModel->averageForecastingErrorRate($forecastingResults, $actualData);
   }
 
   public function getZeroFuzzyfication($fuzzyficationResult)

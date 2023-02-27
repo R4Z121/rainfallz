@@ -34,7 +34,7 @@ $routes->add('/forecast/manual', 'Pages::manualForecast');
 $routes->add('/forecast/dataset/tsukamoto', 'Tsukamoto::datasetForecast');
 $routes->add('/history', 'Pages::history');
 
-$routes->post('/forecast/tsukamoto', 'Tsukamoto::start');
+$routes->post('/forecast/tsukamoto', 'Tsukamoto::manualForecast');
 $routes->post('/forecast/artificial-bee-colony', 'ArtificialBeeColony::start');
 $routes->post('/forecast/dataset/artificial-bee-colony', 'Pages::datasetForecast');
 $routes->post('/forecasting-history', 'ForecastingHistory::addData');

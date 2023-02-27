@@ -77,18 +77,18 @@ class TsukamotoModel extends Model
     return round((abs($actualData - $forecastingResult) / $actualData), 2) * 100;
   }
 
-  public function meanAbsolutePercentageError($forecastingResults, $actualData)
+  public function averageForecastingErrorRate($forecastingResults, $actualData)
   {
     $result = 0;
     for ($i = 0; $i < count($forecastingResults); $i++) {
-      $difference = round((abs($actualData[$i] - $forecastingResults[$i]) / $actualData[$i]), 2);
+      $difference = round((abs($actualData[$i] - $forecastingResults[$i]) / $actualData[$i]), 2) * 100;
       $result += $difference;
     }
-    $result = round(($result / count($actualData)), 2) * 100;
+    $result = round(($result / count($actualData)), 2);
     return $result;
   }
 
-  public function getMAPEResult($apeValues)
+  public function meanAbsolutePercentageError($apeValues)
   {
     return round((array_sum($apeValues) / count($apeValues)), 2);
   }
