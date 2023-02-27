@@ -13,10 +13,15 @@ class ClimateModel extends Model
     return $this->findAll();
   }
 
-  public function getClimateDataVariables()
+  public function getClimateDataVariables($limit = false)
   {
+    $db = db_connect();
+    $builder = $db->table('climate');
     $dataResults = [];
-    $climateData = $this->findAll();
+    if ($limit) {
+      $builder->limit($limit);
+    }
+    $climateData = $builder->get()->getResultArray();
     foreach ($climateData as $data) {
       $variables = [
         "temperature" => $data["temperature"],

@@ -33,15 +33,15 @@
     </tbody>
   </table>
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="abcConfiguration" tabindex="-1" aria-labelledby="abcConfigurationLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Artificial Bee Colony Configuration</h1>
+          <h1 class="modal-title fs-5" id="abcConfigurationLabel">Artificial Bee Colony Configuration</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form class="modal-form d-flex flex-column gap-3" action="" method="post">
+          <form class="modal-form d-flex flex-column gap-3" action="/forecast/dataset/artificial-bee-colony" method="post">
             <section class="form-section">
               <div class="form-input">
                 <label for="totalBees">Total of Bees</label>
@@ -63,7 +63,7 @@
     <h6 class="text-center">SELECT FORECASTING METHOD</h6>
     <div class="d-flex flex-row justify-content-center gap-3 flex-wrap">
       <a class="btn btn-primary" href="/forecast/dataset/tsukamoto" role="button">Fuzzy Inference System Tsukamoto</a>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#abcConfiguration">
         FIS Tsukamoto & Artificial Bee Colony
       </button>
     </div>

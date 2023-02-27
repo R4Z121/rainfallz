@@ -11,18 +11,27 @@ class Tsukamoto extends BaseController
   protected $tsukamotoModel;
   protected $climateModel;
   protected $ruleSetModel;
+  protected $defaultParameters;
+  protected $rainfallData;
 
   public function __construct()
   {
     $this->tsukamotoModel = new TsukamotoModel();
     $this->ruleSetModel = new RuleSetModel();
     $this->climateModel = new ClimateModel();
+    $this->defaultParameters = [
+      "temperature" => [26, 27.5, 29],
+      "airPressure" => [1008.5, 1011, 1013],
+      "humidity" => [63, 75, 85],
+      "windVelocity" => [2, 4, 6.5]
+    ];
+    $this->rainfallData = $this->climateModel->getRainfallData();
   }
 
   public function manualForecast()
   {
     $input = $this->request->getPost();
-    $forecastingResult = $this->forecast($input);
+    $forecastingResult = $this->forecast($input, $this->defaultParameters);
     $errorRate = $this->getDataErrorRate();
     $data = [
       "title" => "Forecasting Result",
@@ -34,13 +43,31 @@ class Tsukamoto extends BaseController
     return view('Pages/result', $data);
   }
 
-  public function datasetForecast()
+  public function viewDatasetForecast()
+  {
+    $dateData = $this->climateModel->getDateData();
+    $datasetForecastingResults = $this->datasetForecast();
+    $data = [
+      "title" => "Dataset Forecasting Result | FIS Tsukamoto",
+      "date" => $dateData,
+      "rainfalls" => $this->rainfallData,
+      "forecastingResults" => $datasetForecastingResults["forecastingResults"],
+      "ape" => $datasetForecastingResults["apeValues"],
+      "mape" => $datasetForecastingResults["mape"]
+    ];
+    return view('Pages/datasetForecast', $data);
+  }
+
+  public function datasetForecast($parameters = false)
   {
     $climateData = $this->climateModel->getAllClimateData();
-    $actualData = $this->climateModel->getRainfallData();
-    $dateData = $this->climateModel->getDateData();
+
     $forecastingResults = [];
     $apeValues = [];
+    $usedParameters = $this->defaultParameters;
+    if ($parameters) {
+      $usedParameters = $parameters;
+    }
 
     foreach ($climateData as $index => $data) {
       $variables = [
@@ -49,37 +76,23 @@ class Tsukamoto extends BaseController
         "humidity" => $data["humidity"],
         "windVelocity" => $data["wind_velocity"]
       ];
-      $forecastResult = $this->forecast($variables);
-      $ape = $this->getAPEValue($actualData[$index], $forecastResult);
+      $forecastResult = $this->forecast($variables, $usedParameters);
+      $ape = $this->getAPEValue($this->rainfallData[$index], $forecastResult);
       array_push($forecastingResults, $forecastResult);
       array_push($apeValues, $ape);
     }
 
     $mape = $this->tsukamotoModel->meanAbsolutePercentageError($apeValues);
 
-    $data = [
-      "title" => "Dataset Forecasting Result | FIS Tsukamoto",
-      "date" => $dateData,
-      "rainfalls" => $actualData,
+    return [
       "forecastingResults" => $forecastingResults,
-      "ape" => $apeValues,
+      "apeValues" => $apeValues,
       "mape" => $mape
     ];
-    return view('Pages/datasetForecast', $data);
   }
 
-  public function forecast($input, $parameters = false)
+  public function forecast($input, $parameters)
   {
-    //Initialize parameters (membership function edge) for each variables
-    if (!$parameters) {
-      $parameters = [
-        "temperature" => [26, 27.5, 29],
-        "airPressure" => [1008.5, 1011, 1013],
-        "humidity" => [63, 75, 85],
-        "windVelocity" => [2, 4, 6.5]
-      ];
-    }
-
     //Do fuzzyfication process and get the result
     $fuzzyficationResult = $this->tsukamotoModel->fuzzyfication($input["temperature"], $input["airPressure"], $input["humidity"], $input["windVelocity"], $parameters);
     // echo "Fuzzyfication Result : <br>";
@@ -123,7 +136,7 @@ class Tsukamoto extends BaseController
         "humidity" => $data["humidity"],
         "windVelocity" => $data["wind_velocity"]
       ];
-      $forecastingResult = $this->forecast($variables);
+      $forecastingResult = $this->forecast($variables, $this->defaultParameters);
       array_push($forecastingResults, $forecastingResult);
     }
     return $this->getErrorRate($actualData, $forecastingResults);

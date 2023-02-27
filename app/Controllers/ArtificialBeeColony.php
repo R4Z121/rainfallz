@@ -12,7 +12,8 @@ class ArtificialBeeColony extends BaseController
   protected $tsukamoto;
   protected $climateModel;
   protected $artificialBeeColonyModel;
-  protected $climateData;
+  protected $trainingData;
+  protected $testingData;
   protected $rainfallData;
 
   public function __construct()
@@ -20,11 +21,12 @@ class ArtificialBeeColony extends BaseController
     $this->tsukamoto = new Tsukamoto();
     $this->climateModel = new ClimateModel();
     $this->artificialBeeColonyModel = new ArtificialBeeColonyModel();
-    $this->climateData = $this->climateModel->getClimateDataVariables();
+    $this->trainingData = $this->climateModel->getClimateDataVariables(24);
+    $this->testingData = $this->climateModel->getClimateDataVariables();
     $this->rainfallData = $this->climateModel->getRainfallData();
   }
 
-  public function start()
+  public function manualForecast()
   {
     //TAKE USER INPUT FOR VARIABLE VALUES, CLIMATE DATA, TOTAL OF BEES, AND TOTAL OF ITERATIONS
     $input = $this->request->getPost();
@@ -36,16 +38,58 @@ class ArtificialBeeColony extends BaseController
     ];
     $totalBees = $input["totalBees"];
     $maxIteration = $input["totalIterations"];
-    $bestFoodSource = [
-      "parameters" => [],
-      "fitnessValue" => 0,
-    ];
 
+    //FIND THE BEST FOOD SOURCE
+    $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
+
+    //FORECAST USING BEST FOOD SOURCE
+    $forecastingResult = $this->tsukamoto->forecast($climateInput, $bestFoodSource["parameters"]);
+
+    $data = [
+      "title" => "Forecasting Result",
+      "input" => $climateInput,
+      "finalResult" => $forecastingResult,
+      "errorRate" => $bestFoodSource["fitnessValue"],
+      "method" => "FIS Tsukamoto & Artificial Bee Colony"
+    ];
+    return view('Pages/result', $data);
+  }
+
+  public function datasetForecast()
+  {
+    $dateData = $this->climateModel->getDateData();
+    //TAKE USER INPUT FOR MAX ITERATION AND TOTAL OF BEES
+    $input = $this->request->getPost();
+    $totalBees = $input["totalBees"];
+    $maxIteration = $input["totalIterations"];
+
+    //FIND THE BEST FOOD SOURCE
+    $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
+
+    //DATASET FORECAST USING BEST FOOD SOURCE
+    $datasetForecastingResults = $this->tsukamoto->datasetForecast($bestFoodSource["parameters"]);
+    $data = [
+      "title" => "Dataset Forecasting Result | FIS Tsukamoto & Artificial Bee Colony",
+      "date" => $dateData,
+      "rainfalls" => $this->rainfallData,
+      "forecastingResults" => $datasetForecastingResults["forecastingResults"],
+      "ape" => $datasetForecastingResults["apeValues"],
+      "mape" => $datasetForecastingResults["mape"]
+    ];
+    return view('Pages/datasetForecast', $data);
+  }
+
+  public function findBestFoodSource($totalBees, $maxIteration)
+  {
     //DEFINE COLONY SIZE, DIMENTIONS, LIMIT
     $dimentions = 12;
     $colonySize = $totalBees * 12;
     $limit = ($dimentions * $colonySize) / 2;
 
+    $bestFoodSource = [
+      "parameters" => [],
+      "fitnessValue" => 0,
+    ];
     //DO INITIALIZATION PHASE (TOTAL OF BEES) => RETURN ARRAY OF FOOD SOURCE WITH FITNESS VALUE FOR EACH SOLUTION AND TRIAL VALUE
     $foodSource = $this->initializationPhase($totalBees);
 
@@ -63,17 +107,7 @@ class ArtificialBeeColony extends BaseController
         $foodSource = $this->scoutBeePhase($foodSource, $abandonedFoodSources);
       }
     }
-    //FORECAST USING BEST FOOD SOURCE
-    $forecastingResult = $this->tsukamoto->forecast($climateInput, $bestFoodSource["parameters"]);
-
-    $data = [
-      "title" => "Forecasting Result",
-      "input" => $climateInput,
-      "finalResult" => $forecastingResult,
-      "errorRate" => $bestFoodSource["fitnessValue"],
-      "method" => "FIS Tsukamoto & Artificial Bee Colony"
-    ];
-    return view('Pages/result', $data);
+    return $bestFoodSource;
   }
 
   public function initializationPhase($totalBees)
@@ -135,17 +169,17 @@ class ArtificialBeeColony extends BaseController
   public function calculateFitnessValue($parameters)
   {
     $forecastingResults = [];
-    for ($i = 0; $i < count($this->climateData); $i++) {
+    for ($i = 0; $i < count($this->trainingData); $i++) {
       $input = [
-        "temperature" => $this->climateData[$i]["temperature"],
-        "airPressure" => $this->climateData[$i]["airPressure"],
-        "humidity" => $this->climateData[$i]["humidity"],
-        "windVelocity" => $this->climateData[$i]["windVelocity"],
+        "temperature" => $this->trainingData[$i]["temperature"],
+        "airPressure" => $this->trainingData[$i]["airPressure"],
+        "humidity" => $this->trainingData[$i]["humidity"],
+        "windVelocity" => $this->trainingData[$i]["windVelocity"],
       ];
       $forecastingResult = $this->tsukamoto->forecast($input, $parameters);
       array_push($forecastingResults, $forecastingResult);
     }
-    $errorRate = $this->tsukamoto->getErrorRate($forecastingResults, $this->rainfallData);
+    $errorRate = $this->tsukamoto->getErrorRate($this->rainfallData, $forecastingResults);
     return $errorRate;
   }
 
