@@ -74,7 +74,12 @@ class TsukamotoModel extends Model
 
   public function absolutePercentageError($forecastingResult, $actualData)
   {
-    return round((abs($actualData - $forecastingResult) / $actualData), 2) * 100;
+    $ape = round((abs($actualData - $forecastingResult) / $actualData), 2) * 100;
+    if ($ape > 100) {
+      return 100;
+    } else {
+      return $ape;
+    }
   }
 
   public function averageForecastingErrorRate($forecastingResults, $actualData)

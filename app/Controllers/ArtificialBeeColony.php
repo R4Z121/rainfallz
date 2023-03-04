@@ -21,7 +21,7 @@ class ArtificialBeeColony extends BaseController
     $this->tsukamoto = new Tsukamoto();
     $this->climateModel = new ClimateModel();
     $this->artificialBeeColonyModel = new ArtificialBeeColonyModel();
-    $this->trainingData = $this->climateModel->getClimateDataVariables(24);
+    $this->trainingData = $this->climateModel->getClimateDataVariables(36);
     $this->testingData = $this->climateModel->getClimateDataVariables();
     $this->rainfallData = $this->climateModel->getRainfallData();
   }
