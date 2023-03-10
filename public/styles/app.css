@@ -61,6 +61,14 @@ main {
   gap: 25px;
 }
 
+.heading-level-content {
+  font-size: 19px;
+}
+
+.heading-level-content>span {
+  font-size: 23px;
+}
+
 .option-container {
   display: flex;
   flex-direction: column;

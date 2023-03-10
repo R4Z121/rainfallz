@@ -47,3 +47,8 @@ $('#generateDefaultParameters').on('click', () => {
   $('input#humidity-parameters').val('63, 75, 85');
   $('input#windVelocity-parameters').val('2, 4, 6.5');
 });
+
+//Calculate Rainfall - Manual Forecasting
+$('#manualCalculateRainfall').on('click', () => {
+  alert("Next lagi gan !");
+});

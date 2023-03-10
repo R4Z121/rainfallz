@@ -1,7 +1,11 @@
 <?= $this->extend('layouts/template'); ?>
 <?= $this->section('content'); ?>
-<section class="page-heading">
+<section class="page-heading flex-heading">
   <h1 class="page-title"><?= $title; ?></h1>
+  <div>
+    <h3 class="heading-level-content">Rainfall Forecasting Result : <span id="rainfall-forecasting-result">0.00%</span>
+    </h3>
+  </div>
 </section>
 <!-- Modal -->
 <div class="modal fade" id="abcConfiguration" tabindex="-1" aria-labelledby="abcConfigurationLabel" aria-hidden="true">
@@ -75,7 +79,7 @@
         <button class="btn btn-primary" type="button" id="generateAbcParameters" data-bs-toggle="modal" data-bs-target="#abcConfiguration">Generate Bee Colony Parameters</button>
       </div>
     </section>
-    <button class="btn btn-primary full-button" type="button">Calculate Rainfall</button>
+    <button class="btn btn-primary full-button" id="manualCalculateRainfall" type="button">Calculate Rainfall</button>
   </form>
 </section>
 <?= $this->endSection(); ?>
