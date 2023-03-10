@@ -6,6 +6,7 @@ use App\Controllers\Tsukamoto;
 
 use App\Models\ClimateModel;
 use App\Models\ArtificialBeeColonyModel;
+use PHPUnit\Framework\MockObject\Rule\Parameters;
 
 class ArtificialBeeColony extends BaseController
 {
@@ -28,31 +29,13 @@ class ArtificialBeeColony extends BaseController
 
   public function manualForecast()
   {
-    //TAKE USER INPUT FOR VARIABLE VALUES, CLIMATE DATA, TOTAL OF BEES, AND TOTAL OF ITERATIONS
-    $input = $this->request->getPost();
-    $climateInput = [
-      "temperature" => $input["temperature"],
-      "airPressure" => $input["airPressure"],
-      "humidity" => $input["humidity"],
-      "windVelocity" => $input["windVelocity"]
-    ];
-    $totalBees = $input["totalBees"];
-    $maxIteration = $input["totalIterations"];
-
-    //FIND THE BEST FOOD SOURCE
-    $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
-
-    //FORECAST USING BEST FOOD SOURCE
-    $forecastingResult = $this->tsukamoto->forecast($climateInput, $bestFoodSource["parameters"]);
-
-    $data = [
-      "title" => "Forecasting Result",
-      "input" => $climateInput,
-      "finalResult" => $forecastingResult,
-      "errorRate" => $bestFoodSource["fitnessValue"],
-      "method" => "FIS Tsukamoto & Artificial Bee Colony"
-    ];
-    return view('Pages/result', $data);
+    $request = \Config\Services::request();
+    if ($request->isAJAX()) {
+      $totalBees = $request->getVar('totalBees');
+      $totalIterations = $request->getVar('totalIterations');
+      $bestFoodSource = $this->findBestFoodSource($totalBees, $totalIterations);
+      return json_encode($bestFoodSource['parameters']);
+    }
   }
 
   public function datasetForecast()
@@ -203,6 +186,7 @@ class ArtificialBeeColony extends BaseController
     $oldFoodLocation = $newParametersCandidate[$randomCategory][$randomIndex];
     $partnerFoodSource = $parameters[$randomPartner][$randomCategory][$randomIndex];
     $newParametersCandidate[$randomCategory][$randomIndex] = $this->artificialBeeColonyModel->generateNewFoodLocation($oldFoodLocation, $partnerFoodSource);
+    sort($newParametersCandidate[$randomCategory]);
     $newFitnessValue = $this->calculateFitnessValue($newParametersCandidate);
 
     return [

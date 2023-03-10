@@ -1,3 +1,7 @@
+.w-full {
+  width: 100%;
+}
+
 .navbar {
   padding: 0.75rem;
 }
@@ -78,11 +82,20 @@ form {
   gap: 15px;
 }
 
+.forecasting-form,
+.section-form {
+  max-width: 600px;
+  flex-direction: column;
+}
+
+.section-form {
+  display: flex;
+  gap: 30px;
+}
+
 .forecasting-form {
   display: none;
-  max-width: 600px;
   gap: 20px;
-  flex-direction: column;
 }
 
 .form-section {

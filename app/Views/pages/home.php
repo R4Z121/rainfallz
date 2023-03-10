@@ -2,7 +2,7 @@
 
 <?= $this->section('content'); ?>
 <section class="page-heading">
-  <h1 class="page-title">Banyuasin Regency Climate (2019 - 2021)</h1>
+  <h1 class="page-title">Banyuasin Regency Climate (2018 - 2022)</h1>
 </section>
 <section class="page-content">
   <table id="climate-data" class="table table-striped table-bordered" style="width:100%">
@@ -58,6 +58,7 @@
       </div>
     </div>
   </div>
+  <!-- End Of Modal -->
   <div class="d-flex flex-column justify-content-center p-4 gap-2">
     <hr>
     <h6 class="text-center">SELECT FORECASTING METHOD</h6>

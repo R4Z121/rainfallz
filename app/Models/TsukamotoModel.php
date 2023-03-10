@@ -87,7 +87,11 @@ class TsukamotoModel extends Model
     $result = 0;
     for ($i = 0; $i < count($forecastingResults); $i++) {
       $difference = round((abs($actualData[$i] - $forecastingResults[$i]) / $actualData[$i]), 2) * 100;
-      $result += $difference;
+      if ($difference > 100) {
+        $result += 100;
+      } else {
+        $result += $difference;
+      }
     }
     $result = round(($result / count($actualData)), 2);
     return $result;
