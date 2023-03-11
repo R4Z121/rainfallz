@@ -50,5 +50,31 @@ $('#generateDefaultParameters').on('click', () => {
 
 //Calculate Rainfall - Manual Forecasting
 $('#manualCalculateRainfall').on('click', () => {
-  alert("Next lagi gan !");
+  const input = {
+    temperature: Number($('input#temperature').val()),
+    airPressure: Number($('input#airPressure').val()),
+    humidity: Number($('input#humidity').val()),
+    windVelocity: Number($('input#windVelocity').val())
+  }
+
+  const parameters = {
+    temperature: $('input#temperature-parameters').val().split(", "),
+    airPressure: $('input#airPressure-parameters').val().split(", "),
+    humidity: $('input#humidity-parameters').val().split(", "),
+    windVelocity: $('input#windVelocity-parameters').val().split(", ")
+  };
+
+  $.ajax({
+    url: '/forecast/manual',
+    type: 'POST',
+    data: {
+      input: input,
+      parameters: parameters,
+    },
+    datatype: 'json',
+    success: (response) => {
+      const forecastingResult = JSON.parse(response);
+      $('#rainfall-forecasting-result').html(forecastingResult);
+    }
+  })
 });

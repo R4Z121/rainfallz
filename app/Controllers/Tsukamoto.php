@@ -30,17 +30,13 @@ class Tsukamoto extends BaseController
 
   public function manualForecast()
   {
-    $input = $this->request->getPost();
-    $forecastingResult = $this->forecast($input, $this->defaultParameters);
-    $errorRate = $this->getDataErrorRate();
-    $data = [
-      "title" => "Forecasting Result",
-      "input" => $input,
-      "errorRate" => $errorRate,
-      "finalResult" => $forecastingResult,
-      "method" => "FIS Tsukamoto"
-    ];
-    return view('Pages/result', $data);
+    $request = \Config\Services::request();
+    if ($request->isAJAX()) {
+      $input = $request->getVar('input');
+      $parameters = $request->getVar('parameters');
+      $finalResult = $this->forecast($input, $parameters);
+      return json_encode($finalResult);
+    }
   }
 
   public function viewDatasetForecast()

@@ -3,7 +3,7 @@
 <section class="page-heading flex-heading">
   <h1 class="page-title"><?= $title; ?></h1>
   <div>
-    <h3 class="heading-level-content">Rainfall Forecasting Result : <span id="rainfall-forecasting-result">0.00%</span>
+    <h3 class="heading-level-content">Rainfall Forecasting Result : <span id="rainfall-forecasting-result">0.00</span>
     </h3>
   </div>
 </section>
