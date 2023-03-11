@@ -21,6 +21,8 @@ $('#forecast_method').change(() => {
 //Generate ABC Parameters
 $('#generateBestParameters').on('click', () => {
   $('#closeModal').click();
+  $('#generateAbcParameters').html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Generating Parameters...");
+  $('.form-content button').prop('disabled',true);
   $.ajax({
     url: "/generateParameters/abc",
     type: "POST",
@@ -35,6 +37,8 @@ $('#generateBestParameters').on('click', () => {
         const variable = parameters[key];
         const newParameters = variable.map(value => value.toFixed(2));
         $(`#${key}-parameters`).val(newParameters.join(", "));
+        $('#generateAbcParameters').html("Generate Bee Colony Parameters");
+        $('.form-content button').prop('disabled',false);
       });
     }
   });
@@ -50,6 +54,9 @@ $('#generateDefaultParameters').on('click', () => {
 
 //Calculate Rainfall - Manual Forecasting
 $('#manualCalculateRainfall').on('click', () => {
+  $('#manualCalculateRainfall').html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Calculating Rainfall...");
+  $('.form-content button').prop('disabled',true);
+
   const input = {
     temperature: Number($('input#temperature').val()),
     airPressure: Number($('input#airPressure').val()),
@@ -75,6 +82,8 @@ $('#manualCalculateRainfall').on('click', () => {
     success: (response) => {
       const forecastingResult = JSON.parse(response);
       $('#rainfall-forecasting-result').html(forecastingResult);
+      $('#manualCalculateRainfall').html("Calculate Rainfall");
+      $('.form-content button').prop('disabled',false);
     }
   })
 });
