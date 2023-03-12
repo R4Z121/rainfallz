@@ -152,12 +152,12 @@ class ArtificialBeeColony extends BaseController
   public function calculateFitnessValue($parameters)
   {
     $forecastingResults = [];
-    for ($i = 0; $i < count($this->trainingData); $i++) {
+    for ($i = 0; $i < count($this->testingData); $i++) {
       $input = [
-        "temperature" => $this->trainingData[$i]["temperature"],
-        "airPressure" => $this->trainingData[$i]["airPressure"],
-        "humidity" => $this->trainingData[$i]["humidity"],
-        "windVelocity" => $this->trainingData[$i]["windVelocity"],
+        "temperature" => $this->testingData[$i]["temperature"],
+        "airPressure" => $this->testingData[$i]["airPressure"],
+        "humidity" => $this->testingData[$i]["humidity"],
+        "windVelocity" => $this->testingData[$i]["windVelocity"],
       ];
       $forecastingResult = $this->tsukamoto->forecast($input, $parameters);
       array_push($forecastingResults, $forecastingResult);
