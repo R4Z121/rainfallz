@@ -75,11 +75,7 @@ class TsukamotoModel extends Model
   public function absolutePercentageError($forecastingResult, $actualData)
   {
     $ape = round((abs($actualData - $forecastingResult) / $actualData), 2) * 100;
-    if ($ape > 100) {
-      return 100;
-    } else {
-      return $ape;
-    }
+    return $ape;
   }
 
   public function averageForecastingErrorRate($forecastingResults, $actualData)
@@ -87,11 +83,7 @@ class TsukamotoModel extends Model
     $result = 0;
     for ($i = 0; $i < count($forecastingResults); $i++) {
       $difference = round((abs($actualData[$i] - $forecastingResults[$i]) / $actualData[$i]), 2) * 100;
-      if ($difference > 100) {
-        $result += 100;
-      } else {
-        $result += $difference;
-      }
+      $result += $difference;
     }
     $result = round(($result / count($actualData)), 2);
     return $result;
@@ -201,31 +193,31 @@ class TsukamotoModel extends Model
       if ($alpha == 0) {
         $z = 105;
       } else if ($alpha < 1) {
-        $z = 105 - ($alpha * 10);
+        $z = 105 - ($alpha * 55);
       } else {
-        $z = 95;
+        $z = 50;
       }
     } else if ($group == "cloudy") {
       if ($alpha == 0) {
-        $z = 305;
+        $z = 300;
       } else if ($alpha < 1) {
-        $z = (200 * $alpha) + 95;
+        $z = (100 * $alpha) + 100;
       } else {
-        $z = 295;
+        $z = 200;
       }
     } else if ($group == "light rain") {
       if ($alpha == 0) {
-        $z = 405;
+        $z = 450;
       } else if ($alpha < 1) {
-        $z = (100 * $alpha) + 295;
+        $z = (150 * $alpha) + 200;
       } else {
-        $z = 395;
+        $z = 350;
       }
     } else if ($group == "rain") {
       if ($alpha == 0) {
-        $z = 395;
+        $z = 450;
       } else if ($alpha < 1) {
-        $z = (105 * $alpha) + 395;
+        $z = (50 * $alpha) + 450;
       } else {
         $z = 500;
       }

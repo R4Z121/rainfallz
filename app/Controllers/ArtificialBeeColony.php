@@ -62,8 +62,38 @@ class ArtificialBeeColony extends BaseController
     return view('Pages/datasetForecast', $data);
   }
 
+  public function testing()
+  {
+    $input = $this->request->getPost();
+    $totalBees = $input["totalBees"];
+    $maxIteration = $input["totalIterations"];
+    $testingNumber = $input["totalTesting"];
+    $testingResult = [];
+    $bestFoodSource = [];
+
+    for ($testingIndex = 1; $testingIndex <= $testingNumber; $testingIndex++) {
+      $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
+      $currentTestingResult = [
+        'testingNumber' => $testingIndex,
+        'MAPE' => $bestFoodSource['fitnessValue'],
+        'executionTime' => $bestFoodSource['executionTime']
+      ];
+      array_push($testingResult, $currentTestingResult);
+    }
+
+    $data = [
+      "title" => "Testing Forecasting",
+      "testingResult" => $testingResult,
+      "totalBees" => $totalBees,
+      "totalIterations" => $maxIteration
+    ];
+
+    return view('pages/result', $data);
+  }
+
   public function findBestFoodSource($totalBees, $maxIteration)
   {
+    $start_time = microtime(true);
     //DEFINE COLONY SIZE, DIMENTIONS, LIMIT
     $dimentions = 12;
     $colonySize = $totalBees * 12;
@@ -90,6 +120,10 @@ class ArtificialBeeColony extends BaseController
         $foodSource = $this->scoutBeePhase($foodSource, $abandonedFoodSources);
       }
     }
+    $end_time = microtime(true);
+    $executionTime = date("H:i:s", $end_time - $start_time);
+    $milliseconds = round(($end_time - $start_time) * 1000);
+    $bestFoodSource["executionTime"] = "$executionTime:$milliseconds";
     return $bestFoodSource;
   }
 
