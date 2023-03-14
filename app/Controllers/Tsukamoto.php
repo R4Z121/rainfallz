@@ -41,15 +41,18 @@ class Tsukamoto extends BaseController
 
   public function viewDatasetForecast()
   {
+    $start_time = microtime(true);
     $dateData = $this->climateModel->getDateData();
     $datasetForecastingResults = $this->datasetForecast();
+    $end_time = microtime(true);
     $data = [
       "title" => "Dataset Forecasting Result | FIS Tsukamoto",
       "date" => $dateData,
       "rainfalls" => $this->rainfallData,
       "forecastingResults" => $datasetForecastingResults["forecastingResults"],
       "ape" => $datasetForecastingResults["apeValues"],
-      "mape" => $datasetForecastingResults["mape"]
+      "mape" => $datasetForecastingResults["mape"],
+      "executionTime" => $this->tsukamotoModel->executionTime($start_time, $end_time)
     ];
     return view('Pages/datasetForecast', $data);
   }

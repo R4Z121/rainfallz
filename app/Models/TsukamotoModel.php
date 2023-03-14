@@ -94,6 +94,16 @@ class TsukamotoModel extends Model
     return round((array_sum($apeValues) / count($apeValues)), 2);
   }
 
+  public function executionTime($start_time, $end_time)
+  {
+    $executionTime = date("H:i:s", $end_time - $start_time);
+    $milliseconds = round(($end_time - $start_time) * 1000);
+    while ($milliseconds >= 1000) {
+      $milliseconds -= 1000;
+    }
+    return "$executionTime:$milliseconds";
+  }
+
   private function temperatureFuzzyfication($temperature, $parameters)
   {
     $coldFuzzyfication = $warmFuzzyfication = $hotFuzzyfication = 0;

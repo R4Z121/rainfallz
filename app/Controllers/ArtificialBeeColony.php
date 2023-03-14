@@ -6,6 +6,7 @@ use App\Controllers\Tsukamoto;
 
 use App\Models\ClimateModel;
 use App\Models\ArtificialBeeColonyModel;
+use App\Models\TsukamotoModel;
 use PHPUnit\Framework\MockObject\Rule\Parameters;
 
 class ArtificialBeeColony extends BaseController
@@ -13,6 +14,7 @@ class ArtificialBeeColony extends BaseController
   protected $tsukamoto;
   protected $climateModel;
   protected $artificialBeeColonyModel;
+  protected $tsukamotoModel;
   protected $trainingData;
   protected $testingData;
   protected $rainfallData;
@@ -22,6 +24,7 @@ class ArtificialBeeColony extends BaseController
     $this->tsukamoto = new Tsukamoto();
     $this->climateModel = new ClimateModel();
     $this->artificialBeeColonyModel = new ArtificialBeeColonyModel();
+    $this->tsukamotoModel = new TsukamotoModel();
     $this->trainingData = $this->climateModel->getClimateDataVariables(36);
     $this->testingData = $this->climateModel->getClimateDataVariables();
     $this->rainfallData = $this->climateModel->getRainfallData();
@@ -57,7 +60,8 @@ class ArtificialBeeColony extends BaseController
       "rainfalls" => $this->rainfallData,
       "forecastingResults" => $datasetForecastingResults["forecastingResults"],
       "ape" => $datasetForecastingResults["apeValues"],
-      "mape" => $datasetForecastingResults["mape"]
+      "mape" => $datasetForecastingResults["mape"],
+      "executionTime" => $bestFoodSource["executionTime"]
     ];
     return view('Pages/datasetForecast', $data);
   }
@@ -70,9 +74,13 @@ class ArtificialBeeColony extends BaseController
     $testingNumber = $input["totalTesting"];
     $testingResult = [];
     $bestFoodSource = [];
+    $bestMape = 0;
 
     for ($testingIndex = 1; $testingIndex <= $testingNumber; $testingIndex++) {
       $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
+      if (!$bestMape || $bestMape > $bestFoodSource["fitnessValue"]) {
+        $bestMape = $bestFoodSource["fitnessValue"];
+      }
       $currentTestingResult = [
         'testingNumber' => $testingIndex,
         'MAPE' => $bestFoodSource['fitnessValue'],
@@ -85,7 +93,8 @@ class ArtificialBeeColony extends BaseController
       "title" => "Testing Forecasting",
       "testingResult" => $testingResult,
       "totalBees" => $totalBees,
-      "totalIterations" => $maxIteration
+      "totalIterations" => $maxIteration,
+      "bestMape" => $bestMape
     ];
 
     return view('pages/result', $data);
@@ -121,9 +130,8 @@ class ArtificialBeeColony extends BaseController
       }
     }
     $end_time = microtime(true);
-    $executionTime = date("H:i:s", $end_time - $start_time);
-    $milliseconds = round(($end_time - $start_time) * 1000);
-    $bestFoodSource["executionTime"] = "$executionTime:$milliseconds";
+
+    $bestFoodSource["executionTime"] = $this->tsukamotoModel->executionTime($start_time, $end_time);
     return $bestFoodSource;
   }
 

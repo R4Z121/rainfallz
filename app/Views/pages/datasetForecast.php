@@ -28,6 +28,7 @@
   </table>
   <div>
     <h5>Mean Absolute Percentage Error : <b><?= $mape . "%"; ?></b></h5>
+    <h5>Execution Time : <b><?= $executionTime; ?></b></h5>
   </div>
 </section>
 <?= $this->endSection(); ?>
