@@ -217,7 +217,7 @@ class TsukamotoModel extends Model
       }
     } else if ($group == "light rain") {
       if ($alpha == 0) {
-        $z = 450;
+        $z = 500;
       } else if ($alpha < 1) {
         $z = (150 * $alpha) + 200;
       } else {
