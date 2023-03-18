@@ -38,25 +38,6 @@
   <form class="section-form">
     <?= csrf_field(); ?>
     <section class="form-section">
-      <h4 class="w-full text-center">Fuzzy Variable Inputs</h4>
-      <div class="form-input">
-        <label for="temperature">Temperature</label>
-        <input type="number" step="any" id="temperature" name="temperature" required>
-      </div>
-      <div class="form-input">
-        <label for="airPressure">Air Pressure</label>
-        <input type="number" step="any" id="airPressure" name="airPressure" required>
-      </div>
-      <div class="form-input">
-        <label for="humidity">Humidity</label>
-        <input type="number" step="any" id="humidity" name="humidity" required>
-      </div>
-      <div class="form-input">
-        <label for="windVelocity">Wind Velocity</label>
-        <input type="number" step="any" id="windVelocity" name="windVelocity" required>
-      </div>
-    </section>
-    <section class="form-section">
       <h4 class="w-full text-center">Membership Function Parameters</h4>
       <div class="form-input">
         <label for="temperature-parameters">Temperature Parameters</label>
@@ -77,6 +58,25 @@
       <div class="w-full d-flex justify-content-center gap-3">
         <button class="btn btn-primary" type="button" id="generateDefaultParameters">Generate Default Parameters</button>
         <button class="btn btn-primary" type="button" id="generateAbcParameters" data-bs-toggle="modal" data-bs-target="#abcConfiguration">Generate Bee Colony Parameters</button>
+      </div>
+    </section>
+    <section class="form-section">
+      <h4 class="w-full text-center">Fuzzy Variable Inputs</h4>
+      <div class="form-input">
+        <label for="temperature">Temperature</label>
+        <input type="number" step="any" id="temperature" name="temperature" required>
+      </div>
+      <div class="form-input">
+        <label for="airPressure">Air Pressure</label>
+        <input type="number" step="any" id="airPressure" name="airPressure" required>
+      </div>
+      <div class="form-input">
+        <label for="humidity">Humidity</label>
+        <input type="number" step="any" id="humidity" name="humidity" required>
+      </div>
+      <div class="form-input">
+        <label for="windVelocity">Wind Velocity</label>
+        <input type="number" step="any" id="windVelocity" name="windVelocity" required>
       </div>
     </section>
     <button class="btn btn-primary full-button" id="manualCalculateRainfall" type="button">Calculate Rainfall</button>
