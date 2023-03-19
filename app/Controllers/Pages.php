@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\ClimateModel;
-use App\Models\ForecastingHistoryModel;
 
 class Pages extends BaseController
 {

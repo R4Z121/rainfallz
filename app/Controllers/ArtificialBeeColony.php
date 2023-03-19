@@ -105,8 +105,7 @@ class ArtificialBeeColony extends BaseController
     $start_time = microtime(true);
     //DEFINE COLONY SIZE, DIMENTIONS, LIMIT
     $dimentions = 12;
-    $colonySize = $totalBees * 12;
-    $limit = ($dimentions * $colonySize) / 2;
+    $limit = ($dimentions * $totalBees) / 2;
 
     $bestFoodSource = [
       "parameters" => [],

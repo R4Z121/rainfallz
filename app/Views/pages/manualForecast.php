@@ -20,11 +20,11 @@
           <section class="form-section">
             <div class="form-input">
               <label for="totalBees">Total of Bees</label>
-              <input type="number" step="any" id="totalBees" name="totalBees" max="25" min="2" required>
+              <input type="number" step="any" id="totalBees" name="totalBees" required>
             </div>
             <div class="form-input">
               <label for="totalIterations">Total of Iterations</label>
-              <input type="number" step="any" id="totalIterations" name="totalIterations" max="25" min="1" required>
+              <input type="number" step="any" id="totalIterations" name="totalIterations" required>
             </div>
           </section>
           <button class="btn btn-primary full-button" type="button" id="generateBestParameters">Generate Best Parameters</button>
