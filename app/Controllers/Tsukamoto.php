@@ -8,11 +8,11 @@ use App\Models\ClimateModel;
 
 class Tsukamoto extends BaseController
 {
-  protected $tsukamotoModel;
-  protected $climateModel;
-  protected $ruleSetModel;
-  protected $defaultParameters;
-  protected $rainfallData;
+  private $tsukamotoModel;
+  private $climateModel;
+  private $ruleSetModel;
+  private $defaultParameters;
+  private $rainfallData;
 
   public function __construct()
   {

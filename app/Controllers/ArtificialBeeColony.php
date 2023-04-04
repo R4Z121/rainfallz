@@ -11,13 +11,12 @@ use PHPUnit\Framework\MockObject\Rule\Parameters;
 
 class ArtificialBeeColony extends BaseController
 {
-  protected $tsukamoto;
-  protected $climateModel;
-  protected $artificialBeeColonyModel;
-  protected $tsukamotoModel;
-  protected $trainingData;
-  protected $testingData;
-  protected $rainfallData;
+  private $tsukamoto;
+  private $climateModel;
+  private $artificialBeeColonyModel;
+  private $tsukamotoModel;
+  private $testingData;
+  private $rainfallData;
 
   public function __construct()
   {
@@ -25,7 +24,6 @@ class ArtificialBeeColony extends BaseController
     $this->climateModel = new ClimateModel();
     $this->artificialBeeColonyModel = new ArtificialBeeColonyModel();
     $this->tsukamotoModel = new TsukamotoModel();
-    $this->trainingData = $this->climateModel->getClimateDataVariables(36);
     $this->testingData = $this->climateModel->getClimateDataVariables();
     $this->rainfallData = $this->climateModel->getRainfallData();
   }
