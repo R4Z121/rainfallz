@@ -8,11 +8,11 @@ use App\Models\ClimateModel;
 
 class Tsukamoto extends BaseController
 {
-  protected $tsukamotoModel;
-  protected $climateModel;
-  protected $ruleSetModel;
-  protected $defaultParameters;
-  protected $rainfallData;
+  private $tsukamotoModel;
+  private $climateModel;
+  private $ruleSetModel;
+  private $defaultParameters;
+  private $rainfallData;
 
   public function __construct()
   {
@@ -30,30 +30,29 @@ class Tsukamoto extends BaseController
 
   public function manualForecast()
   {
-    $input = $this->request->getPost();
-    $forecastingResult = $this->forecast($input, $this->defaultParameters);
-    $errorRate = $this->getDataErrorRate();
-    $data = [
-      "title" => "Forecasting Result",
-      "input" => $input,
-      "errorRate" => $errorRate,
-      "finalResult" => $forecastingResult,
-      "method" => "FIS Tsukamoto"
-    ];
-    return view('Pages/result', $data);
+    $request = \Config\Services::request();
+    if ($request->isAJAX()) {
+      $input = $request->getVar('input');
+      $parameters = $request->getVar('parameters');
+      $finalResult = $this->forecast($input, $parameters);
+      return json_encode($finalResult);
+    }
   }
 
   public function viewDatasetForecast()
   {
+    $start_time = microtime(true);
     $dateData = $this->climateModel->getDateData();
     $datasetForecastingResults = $this->datasetForecast();
+    $end_time = microtime(true);
     $data = [
       "title" => "Dataset Forecasting Result | FIS Tsukamoto",
       "date" => $dateData,
       "rainfalls" => $this->rainfallData,
       "forecastingResults" => $datasetForecastingResults["forecastingResults"],
       "ape" => $datasetForecastingResults["apeValues"],
-      "mape" => $datasetForecastingResults["mape"]
+      "mape" => $datasetForecastingResults["mape"],
+      "executionTime" => $this->tsukamotoModel->executionTime($start_time, $end_time)
     ];
     return view('Pages/datasetForecast', $data);
   }

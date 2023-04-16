@@ -5,46 +5,30 @@
   <h1 class="page-title">Forecasting Result</h1>
 </section>
 <section class="page-content">
+  <div>
+    <h5>Total Iterations : <?= $totalIterations; ?></h5>
+    <h5>Total Bees : <?= $totalBees; ?></h5>
+  </div>
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">Temperature</th>
-        <th scope="col">Humidity</th>
-        <th scope="col">Air Pressure</th>
-        <th scope="col">Wind Velocity</th>
-        <th scope="col">Rainfall</th>
+        <th scope="col">Testing Number</th>
+        <th scope="col">MAPE</th>
+        <th scope="col">Execution Time</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td><?= $input["temperature"]; ?></td>
-        <td><?= $input["humidity"]; ?></td>
-        <td><?= $input["airPressure"]; ?></td>
-        <td><?= $input["windVelocity"]; ?></td>
-        <td><?= $finalResult; ?></td>
-      </tr>
+      <?php foreach ($testingResult as $result) : ?>
+        <tr>
+          <td><?= $result["testingNumber"]; ?></td>
+          <td><?= $result["MAPE"] . '%'; ?></td>
+          <td><?= $result["executionTime"]; ?></td>
+        </tr>
+      <?php endforeach; ?>
     </tbody>
   </table>
-  <?php if ($errorRate) : ?>
-    <div>
-      <h5>Mean Absolute Percentage Error : <b><?= $errorRate . "%"; ?></b></h5>
-    </div>
-    <div>
-      <form class="hidden-form" action="/forecasting-history" method="post">
-        <input type="hidden" id="forecastingMethod" name="forecastingMethod" value="<?= $method; ?>">
-        <input type="hidden" id="temperature" name="temperature" value="<?= $input["temperature"]; ?>">
-        <input type="hidden" id="airPressure" name="airPressure" value="<?= $input["airPressure"]; ?>">
-        <input type="hidden" id="humidity" name="humidity" value="<?= $input["humidity"]; ?>">
-        <input type="hidden" id="windVelocity" name="windVelocity" value="<?= $input["windVelocity"]; ?>">
-        <input type="hidden" id="forecastingResult" name="forecastingResult" value="<?= $finalResult; ?>">
-        <input type="hidden" id="errorRate" name="errorRate" value="<?= $errorRate; ?>">
-        <label>Do you want to add this forecasting result to history table ?</label>
-        <div class="button-form">
-          <button type="submit" class="btn btn-primary">Yes, add it</button>
-          <a class="btn btn-danger" href="/forecast/manual" role="button">No, go back</a>
-        </div>
-      </form>
-    </div>
-  <?php endif; ?>
+  <div>
+    <h5>Best MAPE : <b><?= $bestMape . "%"; ?></b></h5>
+  </div>
 </section>
 <?= $this->endSection(); ?>

@@ -2,7 +2,7 @@
 
 <?= $this->section('content'); ?>
 <section class="page-heading">
-  <h1 class="page-title">Banyuasin Regency Climate (2019 - 2021)</h1>
+  <h1 class="page-title">Banyuasin Regency Climate (2018 - 2022)</h1>
 </section>
 <section class="page-content">
   <table id="climate-data" class="table table-striped table-bordered" style="width:100%">
@@ -45,11 +45,11 @@
             <section class="form-section">
               <div class="form-input">
                 <label for="totalBees">Total of Bees</label>
-                <input type="number" step="any" id="totalBees" name="totalBees" max="25" min="2" required>
+                <input type="number" step="any" id="totalBees" name="totalBees" required>
               </div>
               <div class="form-input">
                 <label for="totalIterations">Total of Iterations</label>
-                <input type="number" step="any" id="totalIterations" name="totalIterations" max="25" min="1" required>
+                <input type="number" step="any" id="totalIterations" name="totalIterations" required>
               </div>
             </section>
             <button class="btn btn-primary full-button" type="submit">Start Forecasting</button>
@@ -58,6 +58,7 @@
       </div>
     </div>
   </div>
+  <!-- End Of Modal -->
   <div class="d-flex flex-column justify-content-center p-4 gap-2">
     <hr>
     <h6 class="text-center">SELECT FORECASTING METHOD</h6>

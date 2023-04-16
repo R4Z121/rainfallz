@@ -32,12 +32,12 @@ $routes->set404Override();
 $routes->get('/', 'Pages::index');
 $routes->add('/forecast/manual', 'Pages::manualForecast');
 $routes->add('/forecast/dataset/tsukamoto', 'Tsukamoto::viewDatasetForecast');
-$routes->add('/history', 'Pages::history');
+$routes->add('/testingForecasting', 'Pages::testing');
 
-$routes->post('/forecast/tsukamoto', 'Tsukamoto::manualForecast');
-$routes->post('/forecast/artificial-bee-colony', 'ArtificialBeeColony::manualForecast');
+$routes->post('/forecast/manual', 'Tsukamoto::manualForecast');
+$routes->post('/generateParameters/abc', 'ArtificialBeeColony::manualForecast');
 $routes->post('/forecast/dataset/artificial-bee-colony', 'ArtificialBeeColony::datasetForecast');
-$routes->post('/forecasting-history', 'ForecastingHistory::addData');
+$routes->post('/forecast/testing', 'ArtificialBeeColony::testing');
 
 /*
  * --------------------------------------------------------------------

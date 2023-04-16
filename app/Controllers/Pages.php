@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\ClimateModel;
-use App\Models\ForecastingHistoryModel;
 
 class Pages extends BaseController
 {
@@ -24,14 +23,11 @@ class Pages extends BaseController
     ];
     return view('pages/manualForecast', $data);
   }
-  public function history()
+  public function testing()
   {
-    $forecastingHistoryModel = new ForecastingHistoryModel();
-    $histories = $forecastingHistoryModel->getAllHistory();
     $data = [
-      'title' => 'Prediction History',
-      'histories' => $histories
+      'title' => 'Testing Tsukamoto-ABC Forecasting',
     ];
-    return view('pages/history', $data);
+    return view('pages/testingForecast', $data);
   }
 }

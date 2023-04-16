@@ -6,53 +6,37 @@ use App\Controllers\Tsukamoto;
 
 use App\Models\ClimateModel;
 use App\Models\ArtificialBeeColonyModel;
+use App\Models\TsukamotoModel;
+use PHPUnit\Framework\MockObject\Rule\Parameters;
 
 class ArtificialBeeColony extends BaseController
 {
-  protected $tsukamoto;
-  protected $climateModel;
-  protected $artificialBeeColonyModel;
-  protected $trainingData;
-  protected $testingData;
-  protected $rainfallData;
+  private $tsukamoto;
+  private $climateModel;
+  private $artificialBeeColonyModel;
+  private $tsukamotoModel;
+  private $testingData;
+  private $rainfallData;
 
   public function __construct()
   {
     $this->tsukamoto = new Tsukamoto();
     $this->climateModel = new ClimateModel();
     $this->artificialBeeColonyModel = new ArtificialBeeColonyModel();
-    $this->trainingData = $this->climateModel->getClimateDataVariables(36);
+    $this->tsukamotoModel = new TsukamotoModel();
     $this->testingData = $this->climateModel->getClimateDataVariables();
     $this->rainfallData = $this->climateModel->getRainfallData();
   }
 
   public function manualForecast()
   {
-    //TAKE USER INPUT FOR VARIABLE VALUES, CLIMATE DATA, TOTAL OF BEES, AND TOTAL OF ITERATIONS
-    $input = $this->request->getPost();
-    $climateInput = [
-      "temperature" => $input["temperature"],
-      "airPressure" => $input["airPressure"],
-      "humidity" => $input["humidity"],
-      "windVelocity" => $input["windVelocity"]
-    ];
-    $totalBees = $input["totalBees"];
-    $maxIteration = $input["totalIterations"];
-
-    //FIND THE BEST FOOD SOURCE
-    $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
-
-    //FORECAST USING BEST FOOD SOURCE
-    $forecastingResult = $this->tsukamoto->forecast($climateInput, $bestFoodSource["parameters"]);
-
-    $data = [
-      "title" => "Forecasting Result",
-      "input" => $climateInput,
-      "finalResult" => $forecastingResult,
-      "errorRate" => $bestFoodSource["fitnessValue"],
-      "method" => "FIS Tsukamoto & Artificial Bee Colony"
-    ];
-    return view('Pages/result', $data);
+    $request = \Config\Services::request();
+    if ($request->isAJAX()) {
+      $totalBees = $request->getVar('totalBees');
+      $totalIterations = $request->getVar('totalIterations');
+      $bestFoodSource = $this->findBestFoodSource($totalBees, $totalIterations);
+      return json_encode($bestFoodSource['parameters']);
+    }
   }
 
   public function datasetForecast()
@@ -74,17 +58,52 @@ class ArtificialBeeColony extends BaseController
       "rainfalls" => $this->rainfallData,
       "forecastingResults" => $datasetForecastingResults["forecastingResults"],
       "ape" => $datasetForecastingResults["apeValues"],
-      "mape" => $datasetForecastingResults["mape"]
+      "mape" => $datasetForecastingResults["mape"],
+      "executionTime" => $bestFoodSource["executionTime"]
     ];
     return view('Pages/datasetForecast', $data);
   }
 
+  public function testing()
+  {
+    $input = $this->request->getPost();
+    $totalBees = $input["totalBees"];
+    $maxIteration = $input["totalIterations"];
+    $testingNumber = $input["totalTesting"];
+    $testingResult = [];
+    $bestFoodSource = [];
+    $bestMape = 0;
+
+    for ($testingIndex = 1; $testingIndex <= $testingNumber; $testingIndex++) {
+      $bestFoodSource = $this->findBestFoodSource($totalBees, $maxIteration);
+      if (!$bestMape || $bestMape > $bestFoodSource["fitnessValue"]) {
+        $bestMape = $bestFoodSource["fitnessValue"];
+      }
+      $currentTestingResult = [
+        'testingNumber' => $testingIndex,
+        'MAPE' => $bestFoodSource['fitnessValue'],
+        'executionTime' => $bestFoodSource['executionTime']
+      ];
+      array_push($testingResult, $currentTestingResult);
+    }
+
+    $data = [
+      "title" => "Testing Forecasting",
+      "testingResult" => $testingResult,
+      "totalBees" => $totalBees,
+      "totalIterations" => $maxIteration,
+      "bestMape" => $bestMape
+    ];
+
+    return view('pages/result', $data);
+  }
+
   public function findBestFoodSource($totalBees, $maxIteration)
   {
+    $start_time = microtime(true);
     //DEFINE COLONY SIZE, DIMENTIONS, LIMIT
     $dimentions = 12;
-    $colonySize = $totalBees * 12;
-    $limit = ($dimentions * $colonySize) / 2;
+    $limit = ($dimentions * $totalBees) / 2;
 
     $bestFoodSource = [
       "parameters" => [],
@@ -107,6 +126,9 @@ class ArtificialBeeColony extends BaseController
         $foodSource = $this->scoutBeePhase($foodSource, $abandonedFoodSources);
       }
     }
+    $end_time = microtime(true);
+
+    $bestFoodSource["executionTime"] = $this->tsukamotoModel->executionTime($start_time, $end_time);
     return $bestFoodSource;
   }
 
@@ -169,12 +191,12 @@ class ArtificialBeeColony extends BaseController
   public function calculateFitnessValue($parameters)
   {
     $forecastingResults = [];
-    for ($i = 0; $i < count($this->trainingData); $i++) {
+    for ($i = 0; $i < count($this->testingData); $i++) {
       $input = [
-        "temperature" => $this->trainingData[$i]["temperature"],
-        "airPressure" => $this->trainingData[$i]["airPressure"],
-        "humidity" => $this->trainingData[$i]["humidity"],
-        "windVelocity" => $this->trainingData[$i]["windVelocity"],
+        "temperature" => $this->testingData[$i]["temperature"],
+        "airPressure" => $this->testingData[$i]["airPressure"],
+        "humidity" => $this->testingData[$i]["humidity"],
+        "windVelocity" => $this->testingData[$i]["windVelocity"],
       ];
       $forecastingResult = $this->tsukamoto->forecast($input, $parameters);
       array_push($forecastingResults, $forecastingResult);
@@ -203,6 +225,7 @@ class ArtificialBeeColony extends BaseController
     $oldFoodLocation = $newParametersCandidate[$randomCategory][$randomIndex];
     $partnerFoodSource = $parameters[$randomPartner][$randomCategory][$randomIndex];
     $newParametersCandidate[$randomCategory][$randomIndex] = $this->artificialBeeColonyModel->generateNewFoodLocation($oldFoodLocation, $partnerFoodSource);
+    sort($newParametersCandidate[$randomCategory]);
     $newFitnessValue = $this->calculateFitnessValue($newParametersCandidate);
 
     return [
