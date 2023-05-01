@@ -94,26 +94,18 @@ class Tsukamoto extends BaseController
   {
     //Do fuzzyfication process and get the result
     $fuzzyficationResult = $this->tsukamotoModel->fuzzyfication($input["temperature"], $input["airPressure"], $input["humidity"], $input["windVelocity"], $parameters);
-    // echo "Fuzzyfication Result : <br>";
-    // d($fuzzyficationResult);
 
     //Get group that has 0 value from fuzzyfication result
     $zeroValueFuzzyfication = $this->getZeroFuzzyfication($fuzzyficationResult);
 
     //Get all rule sets that dont have zero value fuzzyfication category
     $ruleSet = $this->ruleSetModel->getSelectedRules($zeroValueFuzzyfication);
-    // echo "Selected Rule Sets : <br>";
-    // d($ruleSet);
 
     //Do implication process based on all rule sets
     $inferenceProcessResult = $this->tsukamotoModel->inference($ruleSet, $fuzzyficationResult);
-    // echo "Implication Process Result : <br>";
-    // d($inferenceProcessResult);
 
     //Do defuzzyfication process to get the final result
     $finalResult = $this->tsukamotoModel->defuzzyfication($inferenceProcessResult["alpha"], $inferenceProcessResult["z"]);
-    // echo "Final Result : <br>";
-    // dd($finalResult);
     return $finalResult;
   }
 
