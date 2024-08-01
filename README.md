@@ -34,4 +34,4 @@ Here are steps to install and run this project to your computer locally :
     ```
     php spark serve
     ```
-6. Run app in localhost:[port]/webshowcase
+6. Run app in localhost:[port]/rainfallz
